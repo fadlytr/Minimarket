@@ -16,15 +16,16 @@
                     document.getElementById("buyNotif").innerHTML = this.responseText;
                 }
             };
-                xmlhttp.open("GET","BuyTry.php?q="+idBarangBuy+jumlahBuy,true);
-                xmlhttp.send();
+                xmlhttp.open("POST","BuyTry.php",true);
+                xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xmlhttp.send("idBarang=" + idBarangBuy + "&jumlahBuy=" + jumlahBuy);
             }
         }
     </script>
 </head>
 <body>
     <h2>Kasir</h2>
-    <form>
+    <form method="POST">
         <label for="idBarangBuy">Id Barang:</label><br>
         <input type="text" id="idBarangBuy" name="idBarangBuy"><br>
         <label for="jumlahBuy">Jumlah:</label><br>
