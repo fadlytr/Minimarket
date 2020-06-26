@@ -25,9 +25,9 @@
 <body>
     <h2>Kasir</h2>
     <form method="POST" action="BuyTry.php">
-        <label for="idBarangBuy">Id Barang:</label><br>
+        <label>Id Barang:</label><br>
         <input type="text" id="idBarangBuy" name="idBarangBuy"><br>
-        <label for="jumlahBuy">Jumlah:</label><br>
+        <label>Jumlah:</label><br>
         <input type="number" id="jumlahBuy" name="jumlahBuy"><br><br>
         <input type="submit" name="Buy" value="Buy">
     </form> 
