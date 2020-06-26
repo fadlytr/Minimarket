@@ -24,7 +24,7 @@
 </head>
 <body>
     <h2>Kasir</h2>
-    <form method="POST">
+    <form>
         <label for="idBarangBuy">Id Barang:</label><br>
         <input type="text" id="idBarangBuy" name="idBarangBuy"><br>
         <label for="jumlahBuy">Jumlah:</label><br>

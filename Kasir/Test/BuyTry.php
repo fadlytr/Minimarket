@@ -9,10 +9,10 @@
 <body>
 
 <?php
-$q = intval($_GET['q']);
+$q = $_GET['q'];
 $qlen = strlen($q);
 $idBarang = substr($q, 0, 6);
-$jumlahBarang = substr($q, 7, $qlen);
+$jumlahBarang = intval(substr($q, 7, $qlen));
 
 echo $idBarang;
 
