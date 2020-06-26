@@ -6,8 +6,8 @@
     <title>KASIR</title>
     <script>
         function buyProduct(idBarangBuy, jumlahBuy){
-            if (idBarangBuy == "" || jumlahBuy == "" || jumlahBuy < 1) {
-                document.getElementById("buyNotif").innerHTML = "";
+            if (idBarangBuy == "") {
+                document.getElementById("buyNotif").innerHTML = "masukkan id barang!!";
                 return;
             } else {
                 var xmlhttp = new XMLHttpRequest();
@@ -29,11 +29,11 @@
         <input type="text" id="idBarangBuy" name="idBarangBuy"><br>
         <label for="jumlahBuy">Jumlah:</label><br>
         <input type="number" id="jumlahBuy" name="jumlahBuy"><br><br>
-        <input type="submit" name="Buy" value="Buy" onclick="buyProduct(this.idBarangBuy, this.jumlahBuy)">
+        <input type="submit" name="Buy" value="Buy" onclick="buyProduct(document.getElementById('idBarangBuy').value,document.getElementById('jumlahBuy').value)">
     </form> 
 
     <br>
-    <div id="buyNotif"><b>Buy notification here....</b></div> <br>
+    <div id="buyNotif"><b></b></div> <br>
     <br>
 
     <form method="POST">
