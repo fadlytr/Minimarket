@@ -29,7 +29,7 @@
         <input type="text" id="idBarangBuy" name="idBarangBuy"><br>
         <label>Jumlah:</label><br>
         <input type="number" id="jumlahBuy" name="jumlahBuy"><br><br>
-        <input type="submit" name="Buy" value="Buy">
+        <input type="submit" name="Buy" value="Beli">
     </form> 
 
     <br>
