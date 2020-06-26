@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,15 +16,19 @@ if (!$con) {
 
 if (isset($_POST['idBarangBuy']) && isset($_POST['jumlahBuy'])) {
   $idBarang = mysqli_real_escape_string($con, $_POST['idBarangBuy']);
-  $jumlahBarang = mysqli_real_escape_string($con, $_POST['jumlahBuy']);
+  $jumlahBarang = $_POST['jumlahBuy'];
+
+  echo $jumlahBarang;
 
   $getStok="SELECT stok_barang FROM barang WHERE id_barang = '$idBarang'";
-  $stokNow = mysqli_query($con,$getStok);
-  $stokNow = $stokNow - $jumlahBarang;
-  $updateStok = "UPDATE barang SET stok_barang = $stokNow WHERE id_barang = '$idBarang'";
+  $result = mysqli_query($con,$getStok);
+  $stokNow = mysqli_fetch_assoc($result);
+  echo $stokNow['stok_barang'];
+  $jumlahBarang = $stokNow['stok_barang'] - $jumlahBarang;
+  $updateStok = "UPDATE barang SET stok_barang = $jumlahBarang WHERE id_barang = '$idBarang'";
   mysqli_query($con,$updateStok);
 
-  echo '$stokNow';
+  echo $jumlahBarang;
   mysqli_close($con);
 }else{
   echo "<p>dunno</p>";

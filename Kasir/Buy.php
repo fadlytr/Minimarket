@@ -1,23 +1,27 @@
 <?php
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "myDB";
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+$con = mysqli_connect('localhost','root','','minimarket');
+if (!$con) {
+  die('Could not connect: ' . mysqli_error($con));
 }
 
-$sql = "UPDATE MyGuests SET lastname='Doe' WHERE id=2";
+if (isset($_POST['idBarangBuy']) && isset($_POST['jumlahBuy'])) {
+  $idBarang = mysqli_real_escape_string($con, $_POST['idBarangBuy']);
+  $jumlahBarang = $_POST['jumlahBuy'];
 
-if ($conn->query($sql) === TRUE) {
-  echo "Record updated successfully";
-} else {
-  echo "Error updating record: " . $conn->error;
+  echo $jumlahBarang;
+
+  $getStok="SELECT stok_barang FROM barang WHERE id_barang = '$idBarang'";
+  $result = mysqli_query($con,$getStok);
+  $stokNow = mysqli_fetch_assoc($result);
+  echo $stokNow['stok_barang'];
+  $jumlahBarang = $stokNow['stok_barang'] - $jumlahBarang;
+  $updateStok = "UPDATE barang SET stok_barang = $jumlahBarang WHERE id_barang = '$idBarang'";
+  mysqli_query($con,$updateStok);
+
+  echo $jumlahBarang;
+  mysqli_close($con);
+}else{
+  echo "<p>dunno</p>";
 }
-
-$conn->close();
-?> 
+?>

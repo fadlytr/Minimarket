@@ -7,12 +7,12 @@
 </head>
 <body>
     <h2>Kasir</h2>
-    <form method="POST">
-        <label for="idBarangBuy">Id Barang:</label><br>
+    <form method="POST" action="Buy.php">
+        <label>Id Barang:</label><br>
         <input type="text" id="idBarangBuy" name="idBarangBuy"><br>
-        <label for="jumlahBuy">Jumlah:</label><br>
+        <label>Jumlah:</label><br>
         <input type="number" id="jumlahBuy" name="jumlahBuy"><br><br>
-        <input type="submit" value="Buy">
+        <input type="submit" name="Buy" value="Buy">
     </form> 
 
     <br><br>
