@@ -2,7 +2,14 @@
 <head></head>
 <body>
 	<h1>Helo</h1>
-	 <button onclick="addData()">Add Data</button> 
+	<!-- FORM Request Barang -->
+	<!-- Gapake tag <form> supaya work haha -->
+	ID BARANG<input type="text" name="id_barang" id="id_barang"/></br>
+	JUMLAH BARANG<input type="number" name="jml_barang" id="jml_barang"/></br>
+	<button onclick="request()">Request Barang</button>
+	
+	<!-- Show data request -->
+	
 </body>
 
 <!-- The core Firebase JS SDK is always required and must be listed first -->
@@ -29,14 +36,22 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
-  
-function addData() {
-	console.log("Add Data Clicked!");
+</script>
+
+<script>
+function request(){
+	console.log("Request Barang Clicked!");
+	// GET VALUE DARI FORM
+	var val_id_barang = document.getElementById('id_barang').value;
+	var val_jml_barang = document.getElementById('jml_barang').value;
+	var val_id_request = "R1" + val_id_barang
+	
+	// TAMBAH DATA KE FIREBASE
 	var db = firebase.firestore();
-	db.collection("users").add({
-	first: "Ada",
-	last: "Lovelace",
-	born: 1815
+	db.collection("requests").add({
+	id_request: val_id_barang,
+	id_barang: val_id_barang,
+	jml_barang: Number(val_jml_barang)
 	})
 	.then(function(docRef) {
 		console.log("Document written with ID: ", docRef.id);
