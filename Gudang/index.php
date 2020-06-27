@@ -2,13 +2,17 @@
 <head></head>
 <body>
 	<h1>Helo</h1>
+	 <button onclick="addData()">Add Data</button> 
 </body>
+
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
 
-<!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
+<!-- Firestore -->
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
+
 
 <script>
   // Your web app's Firebase configuration
@@ -25,5 +29,21 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
+  
+function addData() {
+	console.log("Add Data Clicked!");
+	var db = firebase.firestore();
+	db.collection("users").add({
+	first: "Ada",
+	last: "Lovelace",
+	born: 1815
+	})
+	.then(function(docRef) {
+		console.log("Document written with ID: ", docRef.id);
+	})
+	.catch(function(error) {
+		console.error("Error adding document: ", error);
+	});
+}
 </script>
 </html>
