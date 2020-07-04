@@ -60,7 +60,7 @@
 				<td class="col-md-6">
 					<h5><?= $data['nama_barang']; ?></h5>
 					<p class="price">Rp <?= $data['harga_barang']; ?></p>
-					<p><?= $data['total']; ?></p>
+					<p>Jumlah : <?= $data['total']; ?></p>
 				</td>
 			</tr>
 			<?php 
@@ -76,8 +76,8 @@
 				<div class="card-body m-2">
 					<h5>Ringkasan Belanja</h5>	
 					<div class="row">
-						<div class="col-md-9">Total Harga</div>
-						<div class="col-md-3 price">Rp <?= $total_harga; ?></div>
+						<div class="col-md-8">Total Harga</div>
+						<div class="col-md-4 price">Rp <?= $total_harga; ?></div>
 					</div>
 
 				</div>

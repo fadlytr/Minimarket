@@ -53,30 +53,6 @@ INSERT INTO `barang` (`id_barang`, `nama_barang`, `harga_barang`, `stok_barang`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cart`
---
-
-CREATE TABLE `cart` (
-  `id_cart` int(11) NOT NULL,
-  `id_barang` char(6) NOT NULL,
-  `qty` int(11) NOT NULL,
-  `status` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `cart`
---
-
-INSERT INTO `cart` (`id_cart`, `id_barang`, `qty`, `status`) VALUES
-(1, 'M001', 2, 'masuk'),
-(2, 'M002', 10, 'masuk'),
-(3, 'M001', 90, 'masuk'),
-(4, 'M001', 1, 'masuk'),
-(5, 'M004', 3, 'masuk');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `detail_transaksi`
 --
 
@@ -153,12 +129,6 @@ INSERT INTO `transaksi` (`id_trx`, `jenis_trx`, `tgl_trx`, `status`) VALUES
 ALTER TABLE `barang`
   ADD PRIMARY KEY (`id_barang`);
 
---
--- Indexes for table `cart`
---
-ALTER TABLE `cart`
-  ADD PRIMARY KEY (`id_cart`),
-  ADD KEY `id_barang` (`id_barang`);
 
 --
 -- Indexes for table `detail_transaksi`
@@ -184,11 +154,7 @@ ALTER TABLE `transaksi`
 -- AUTO_INCREMENT for dumped tables
 --
 
---
--- AUTO_INCREMENT for table `cart`
---
-ALTER TABLE `cart`
-  MODIFY `id_cart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 
 --
 -- AUTO_INCREMENT for table `transaksi`
@@ -200,11 +166,6 @@ ALTER TABLE `transaksi`
 -- Constraints for dumped tables
 --
 
---
--- Constraints for table `cart`
---
-ALTER TABLE `cart`
-  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`id_barang`) REFERENCES `barang` (`id_barang`);
 
 --
 -- Constraints for table `detail_transaksi`
