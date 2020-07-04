@@ -3,7 +3,8 @@
   $dbhost = "localhost";
   $dbuser = "root";
   $dbpass = "";
-  $link = mysqli_connect($dbhost,$dbuser,$dbpass);
+  $dbname = "minimarket";
+  $link = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
   
   //periksa koneksi, tampilkan pesan kesalahan jika gagal
   if(!$link){
