@@ -129,12 +129,6 @@ INSERT INTO `transaksi` (`id_trx`, `jenis_trx`, `tgl_trx`, `status`) VALUES
 ALTER TABLE `barang`
   ADD PRIMARY KEY (`id_barang`);
 
---
--- Indexes for table `cart`
---
-ALTER TABLE `cart`
-  ADD PRIMARY KEY (`id_cart`),
-  ADD KEY `id_barang` (`id_barang`);
 
 --
 -- Indexes for table `detail_transaksi`
@@ -160,11 +154,6 @@ ALTER TABLE `transaksi`
 -- AUTO_INCREMENT for dumped tables
 --
 
---
--- AUTO_INCREMENT for table `cart`
---
-ALTER TABLE `cart`
-  MODIFY `id_cart` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `transaksi`
@@ -176,11 +165,6 @@ ALTER TABLE `transaksi`
 -- Constraints for dumped tables
 --
 
---
--- Constraints for table `cart`
---
-ALTER TABLE `cart`
-  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`id_barang`) REFERENCES `barang` (`id_barang`);
 
 --
 -- Constraints for table `detail_transaksi`
