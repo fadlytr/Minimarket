@@ -2,7 +2,10 @@
 include 'connection.php';
 ?>
 <html>
-<head></head>
+<head>
+	<title>Gudang</title>
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+</head>
 <body onload="getRequests()">
 	<h1>Helo</h1>
 	
@@ -99,12 +102,27 @@ include 'connection.php';
 		<tr>
 			<td><?= $data['id_barang'];?></td>
 			<td><?= $data['nama_barang'];?></td>
-			<td><img src="<?= $data['img'];?>"/></td>
-			<td><input type="number" value="<?= $data['stok_barang'];?>"/><button onclick="updateStok()">Update Stok</button></td>
+			<td><img width="100" src="<?= $data['img'];?>"/></td>
+			<td><input id="<?= $data['id_barang'];?>" type="number" value="<?= $data['stok_barang'];?>"/><button onclick="updateStok('<?= $data['id_barang'];?>')">Update Stok</button></td>
 		</tr>
 		
 	<?php } ?>
 	</table>
+	<script type="text/javascript">
+	function updateStok(val_id_barang){
+		var val_new_stok = document.getElementById(val_id_barang).value;
+	
+		$.ajax({
+            type : "POST",  //type of method
+            url  : "update_stok.php",  //your page
+            data : { id_barang: val_id_barang, new_stok: val_new_stok},// passing the values
+            success: function(res){
+				alert(res);          //do what you want here...
+            }
+        });
+	}
+	
+	</script>
 </body>
 
 <!-- The core Firebase JS SDK is always required and must be listed first -->
@@ -114,7 +132,6 @@ include 'connection.php';
 <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-firestore.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-analytics.js"></script>
-
 
 <script>
   // Your web app's Firebase configuration
