@@ -1,9 +1,4 @@
 <?php
-$con = mysqli_connect('localhost','root','','minimarket');
-if (!$con) {
-  die('Could not connect: ' . mysqli_error($con));
-}
-
 if (isset($_POST['idBarangBuy']) && isset($_POST['jumlahBuy'])) {
   $idBarang = mysqli_real_escape_string($con, $_POST['idBarangBuy']);
   $jumlahBarang = $_POST['jumlahBuy'];

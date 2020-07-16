@@ -1,18 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-
-</style>
-</head>
-<body>
-
 <?php
-$con = mysqli_connect('localhost','root','','minimarket');
-if (!$con) {
-  die('Could not connect: ' . mysqli_error($con));
-}
-
 if (isset($_POST['idBarangBuy']) && isset($_POST['jumlahBuy'])) {
   $idBarang = mysqli_real_escape_string($con, $_POST['idBarangBuy']);
   $jumlahBarang = $_POST['jumlahBuy'];
@@ -42,5 +28,3 @@ if (isset($_POST['idBarangBuy']) && isset($_POST['jumlahBuy'])) {
 <form method="post" action="index.php">
   <input type="submit" name="Home" value="Home">
 </form>
-</body>
-</html> 
