@@ -1,26 +1,48 @@
+<!-- nambahin field status di db detail_transaksi
+bikin css if status cannot proceed liatin disable
+ -->
+
 <?php
 	include 'connection.php';
 	if(isset($_POST['bayar'])){
 		$id = $_POST['id_trx'];
 
+		if($id!=null){
 		// get barang yang ada di transaksi ini (cart ini)
-		$barang = $link->query("SELECT * FROM detail_transaksi WHERE id_trx = $id");
+		$barang = $link->query("SELECT a.*, b.* , SUM(a.jml_barang) as total 
+						from detail_transaksi a JOIN barang b 
+						ON a.id_barang = b.id_barang AND a.id_trx = $id 
+						GROUP BY a.id_barang");
+
+		$trx = 0; //inisialisasi counter banyak item / trx
 		while($data = mysqli_fetch_array($barang)){ 
 			$id_barang = $data['id_barang'];
-			$qty = $data['jml_barang'];
+			$qty = $data['total'];
 
-			//ngurangin stok barang
-			$get_stock = $link->query("SELECT stok_barang FROM barang WHERE id_barang = '$id_barang'")->fetch_object()->stok_barang;
-			$stock_now = $get_stock - $qty;
-			$update_stock = $link->query("UPDATE barang SET stok_barang = $stock_now WHERE id_barang = '$id_barang'");
+			//ngurangin stok barang	
+			if($qty >= $data['stok_barang']){
+				$stock_now = $data['stok_barang'] - $qty;
+				$update_stock = $link->query("UPDATE barang SET stok_barang = $stock_now WHERE id_barang = '$id_barang'");
+				$trx++; //counter buat tau bahwa transaksi ini jadi dilakuin 
+			}
 		}
 
-		//update status pembayaran
-		$query = $link->query("UPDATE transaksi SET status = 'bayar' WHERE id_trx = '$id'");
-		if($query){
+		// update status pembayaran
+		if($trx > 0){
+			$query = $link->query("UPDATE transaksi SET status = 'bayar' WHERE id_trx = '$id'");
+			if($query){
 			echo '<script language="javascript">alert("Berhasil"); document.location="index.php";</script>';
+			}else{
+				echo '<script language="javascript">alert("Tidak Berhasil"); document.location="index.php";</script>';
+			}
 		}else{
-			echo '<script language="javascript">alert("Tidak Berhasil"); document.location="index.php";</script>';
+			$query = $link->query("UPDATE transaksi SET status = 'cannot_proceed' WHERE id_trx = '$id'");
+			if($query){
+				echo '<script language="javascript">alert("Tidak dapat diproses"); document.location="index.php";</script>';
+			}
+		}
+		}else{
+			echo '<script language="javascript">alert("Your cart is empty"); </script>';
 		}
 	}
 ?>
@@ -44,13 +66,16 @@
 				<td><h4>Cart</h4><td>
 			</tr>
 			<?php  
-				$id_trx = $link -> query("SELECT id_trx FROM transaksi WHERE status = 'new_trx'")->fetch_object()->id_trx;
+				$id_trx = $link -> query("SELECT id_trx FROM transaksi WHERE status = 'new_trx' AND jenis_trx='2'")->fetch_object()->id_trx;
+
+				$total_harga = 0;
+				if($id_trx!=null){
 				$sql = "SELECT a.*, b.* , SUM(a.jml_barang) as total 
 						from detail_transaksi a JOIN barang b 
-						ON a.id_barang = b.id_barang AND a.id_trx = $id_trx
+						ON a.id_barang = b.id_barang AND a.id_trx = $id_trx 
 						GROUP BY a.id_barang";
 				$result	= mysqli_query($link, $sql);
-				$total_harga = 0;
+				
 				while($data = mysqli_fetch_array($result)){  
 			?>
 			<tr>
@@ -58,15 +83,27 @@
 					<img class="cart-img" src="<?= $data['img']; ?>">
 				</td>
 				<td class="col-md-6">
-					<h5><?= $data['nama_barang']; ?></h5>
+					<h5><?= $data['nama_barang']; ?> </h5>
 					<p class="price">Rp <?= $data['harga_barang']; ?></p>
-					<p>Jumlah : <?= $data['total']; ?></p>
+					<?php 
+						if($data['stok_barang'] < $data['total']){ 
+							echo '<p class = "warning_message">Jumlah : '.$data['total'].'&nbsp&nbsp&nbspStok Habis</p>';
+						}
+						else{
+							echo '<p>Jumlah : '.$data['total'].'</p>';
+							$total_per_item = $data['total'] * $data['harga_barang'];
+							$total_harga += $total_per_item;
+						}
+					?>
 				</td>
 			</tr>
 			<?php 
-				$total_per_item = $data['total'] * $data['harga_barang'];
-				$total_harga += $total_per_item;
 				} 
+				}else{
+					echo '<tr><td><p>Cart is empty</p></td></tr>';
+				}
+
+
 			?>
 		</table>
 		</div>

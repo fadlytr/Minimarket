@@ -6,14 +6,14 @@
 		$status = 'new_trx';
 		$datenow = date("Y-m-d H:i:s");
 		
-		// Liat apakah transaksi lama udah dibayar atau belum kalau udah bikin transaksi baru 
-		$trx = $link -> query("SELECT COUNT(*) FROM transaksi WHERE status = 'new_trx'")->fetch_row();
+				// Liat apakah transaksi lama udah dibayar atau belum kalau udah bikin transaksi baru 
+		$trx = $link -> query("SELECT COUNT(*) FROM transaksi WHERE status = 'new_trx' AND jenis_trx = 2 ")->fetch_row();
 		if($trx[0] == 0){
 			$new_trx = mysqli_query($link,"INSERT INTO transaksi (jenis_trx,tgl_trx,status) VALUES('2', '$datenow', '$status')");
 		}
 
 		// Ambil id_trx terakhir yang statusnya belum dibayar
-		$id_trx = $link -> query("SELECT id_trx FROM transaksi WHERE status = '$status'")->fetch_object()->id_trx;
+		$id_trx = $link -> query("SELECT id_trx FROM transaksi WHERE status = '$status' AND jenis_trx = 2 ")->fetch_object()->id_trx;
 
 		// Masukin ke cart
 		$query = mysqli_query($link,"INSERT INTO detail_transaksi VALUES('$id_trx','$id_barang', '$qty')");
@@ -56,7 +56,7 @@
 					<div class="mt-4">
 						<form action="index.php" method="POST">
 							<button class="btn btn-outline-success btn-sm">-</button>
-							<input  type="number" name="qty">
+							<input  type="number" name="qty" min="1">
 							<button class="btn btn-outline-success btn-sm ">+</button>
 							<input type="hidden" name="id" value="<?= $data['id_barang'];?>">
 							<input type="submit" name="submit" value="Add to cart" class="btn btn-warning btn-sm ml-2">
