@@ -1,3 +1,6 @@
+<?php
+include 'connection.php';
+?>
 <html>
 <head></head>
 <body onload="getRequests()">
@@ -20,13 +23,11 @@
 		// GET VALUE DARI FORM
 		var val_id_barang = document.getElementById('id_barang').value;
 		var val_jml_barang = document.getElementById('jml_barang').value;
-		var val_id_request = "R1" + val_id_barang
 		var val_id_minimarket = document.getElementById('id_minimarket').value;
 		
 		// TAMBAH DATA KE FIREBASE
 		var db = firebase.firestore();
 		db.collection("requests").add({
-		id_request: val_id_request,
 		id_barang: val_id_barang,
 		id_minimarket: val_id_minimarket,
 		jml_barang: Number(val_jml_barang)
@@ -54,16 +55,15 @@
 			querySnapshot.forEach(function(doc) {
 				console.log(doc.id, " => ", doc.data());
 				var req_data = doc.data();
-				var id_request = req_data["id_request"];
+				var id_request = doc.id;
 				console.log(id_request);
-				output = output + "<tr><td>"+req_data["id_request"]+"</td><td>"+req_data["id_barang"]+"</td><td>"+req_data["id_minimarket"]+"</td><td>"+req_data["jml_barang"]+"</td><td><input id='"+req_data["id_request"]+"'type='date' value='"+req_data["jadwal_kirim"]+"'/><button onclick='updateJadwal(\""+id_request+"\",\""+doc.id+"\")'>Update Jadwal</button></td></tr>";
+				output = output + "<tr><td>"+id_request+"</td><td>"+req_data["id_barang"]+"</td><td>"+req_data["id_minimarket"]+"</td><td>"+req_data["jml_barang"]+"</td><td><input id='"+id_request+"'type='date' value='"+req_data["jadwal_kirim"]+"'/><button onclick='updateJadwal(\""+id_request+"\",\""+doc.id+"\")'>Update Jadwal</button></td></tr>";
 			});
 			document.getElementById("requestData").innerHTML = output;
 		});
 	}
 	</script>
 	<script>
-	
 	function updateJadwal(id_request,doc_id){
 		var db = firebase.firestore();
 		var tanggal = document.getElementById(id_request).value;
@@ -86,6 +86,25 @@
 		});
 	}
 	</script>
+	
+	<table border="1">
+	<tr><td>ID BARANG</td><td>NAMA BARANG</td><td>IMAGE</td><td>STOK</td></tr>
+	<?php	
+		$result = mysqli_query($conn, "SELECT * FROM barang");
+		$total = mysqli_num_rows($result);
+			  
+		while($data = mysqli_fetch_array($result)){ 
+		?>
+		
+		<tr>
+			<td><?= $data['id_barang'];?></td>
+			<td><?= $data['nama_barang'];?></td>
+			<td><img src="<?= $data['img'];?>"/></td>
+			<td><input type="number" value="<?= $data['stok_barang'];?>"/><button onclick="updateStok()">Update Stok</button></td>
+		</tr>
+		
+	<?php } ?>
+	</table>
 </body>
 
 <!-- The core Firebase JS SDK is always required and must be listed first -->
