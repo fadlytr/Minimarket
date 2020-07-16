@@ -10,23 +10,34 @@ include 'connection.php';
 </head>
 
 <body onload="getRequests()">
-  <h2>Kasir MM1</h2>
-  <form method="POST" action="Buy.php">
-    <label>Id Barang:</label><br>
-    <input type="text" id="idBarangBuy" name="idBarangBuy"><br>
-    <label>Jumlah:</label><br>
-    <input type="number" id="jumlahBuy" name="jumlahBuy"><br><br>
-    <input type="submit" name="Buy" value="Beli">
-  </form>
+  <b style="font-size: x-large;">Kasir MM1</b><br>
+  <div id="form_buy" style="margin-top: 5px;">
+    <form method="POST" action="Buy.php">
+      <label style="padding-right: 38px;">Id Barang</label>
+      <select id="idBarangBuy" name="idBarangBuy">
+        <?php
+        $result = mysqli_query($conn, "SELECT id_barang FROM barang");
+        $total = mysqli_num_rows($result);
 
-  <table id="table_barang" border="1">
-    <tr>
-      <td>ID BARANG</td>
-      <td>ID MINIMARKET</td>
-      <td>JUMLAH BARANG</td>
-      <td>JADWAL PENERIMAAN</td>
-    <tr>
-  </table>
+        while ($data = mysqli_fetch_array($result)) {
+        ?>
+          <option name="<?= $data['id_barang']; ?>"><?= $data['id_barang']; ?></option>
+        <?php } ?>
+      </select></br>
+
+      <label style="padding-right: 10px;">Jumlah Barang</label><input type="number" name="jumlahBuy" id="jumlahBuy" /></br>
+      <input type="submit" name="Buy" value="Beli">
+
+      <table id="tableBarang" border="1">
+        <tr>
+          <td>Id Barang</td>
+          <td>Jumlah Beli</td>
+          <td>Harga Satuan</td>
+          <td>Harga total</td>
+        <tr>
+      </table>
+    </form>
+  </div>
 
   <!-- FORM Request Barang -->
   <div id="form_request" style="margin-top:20px">
@@ -52,7 +63,7 @@ include 'connection.php';
       function request() {
         console.log("Request Barang Clicked!");
         // GET VALUE DARI FORM
-        var val_id_barang = document.getElementById('id_barang').value;;
+        var val_id_barang = document.getElementById('id_barang').value;
         var val_jml_barang = document.getElementById('jml_barang').value;
         var val_id_minimarket = "MM1";
 
@@ -91,7 +102,7 @@ include 'connection.php';
             var id_request = doc.id;
             console.log(id_request);
             if (req_data["isReceived"] == false || req_data["isReceived"] == undefined) {
-              output = output + "<tr><td>" + id_request + "</td><td>" + req_data["id_barang"] + "</td><td>" + req_data["jml_barang"] + "</td><td>" + req_data["jadwal_kirim"] + "<button id ='" + id_request + "' onclick='received(\"" + id_request + "\",\"" + doc.id + "\")'>Received</button></td></tr>";
+              output = output + "<tr><td>" + id_request + "</td><td>" + req_data["id_barang"] + "</td><td>" + req_data["jml_barang"] + "</td><td>" + req_data["jadwal_kirim"] + "<button id ='" + id_request + "' onclick='received(\"" + id_request + "\",\"" + doc.id + "\")'>Receive</button></td></tr>";
             }
           });
           document.getElementById("requestData").innerHTML = output;
@@ -104,7 +115,6 @@ include 'connection.php';
     <script>
       function received(id_request, doc_id) {
         var db = firebase.firestore();
-        var tanggal = document.getElementById(id_request).value;
         var val_timestamp = firebase.firestore.Timestamp.now();
         var washingtonRef = db.collection("requests").doc(doc_id);
 
