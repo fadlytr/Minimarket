@@ -2,8 +2,15 @@
 <head></head>
 <body onload="getRequests()">
 	<h1>Helo</h1>
+	
+	<!-- TODO
+	- nambah field tanggal sama id minimarket di table request
+	- update stock di gudang
+	-->
+	
 	<!-- FORM Request Barang -->
 	<!-- Gapake tag <form> supaya work haha -->
+	ID MINIMARKET<input type="text" name="id_minimarket" id="id_minimarket"/></br>
 	ID BARANG<input type="text" name="id_barang" id="id_barang"/></br>
 	JUMLAH BARANG<input type="number" name="jml_barang" id="jml_barang"/></br>
 	<button onclick="request()">Request Barang</button>
@@ -14,12 +21,14 @@
 		var val_id_barang = document.getElementById('id_barang').value;
 		var val_jml_barang = document.getElementById('jml_barang').value;
 		var val_id_request = "R1" + val_id_barang
+		var val_id_minimarket = document.getElementById('id_minimarket').value;
 		
 		// TAMBAH DATA KE FIREBASE
 		var db = firebase.firestore();
 		db.collection("requests").add({
-		id_request: val_id_barang,
-		id_barang: "R"+val_id_barang,
+		id_request: val_id_request,
+		id_barang: val_id_barang,
+		id_minimarket: val_id_minimarket,
 		jml_barang: Number(val_jml_barang)
 		})
 		.then(function(docRef) {
@@ -40,14 +49,40 @@
 	<script>
 	function getRequests(){	
 		var db = firebase.firestore();
-		var output = "<tr><td>ID REQUEST</td><td>ID BARANG</td><td>JUMLAH BARANG</td><tr>";
+		var output = "<tr><td>ID REQUEST</td><td>ID BARANG</td><td>ID MINIMARKET</td><td>JUMLAH BARANG</td><td>JADWAL PENGIRIMAN</td><tr>";
 		db.collection("requests").get().then(function(querySnapshot) {
 			querySnapshot.forEach(function(doc) {
 				console.log(doc.id, " => ", doc.data());
 				var req_data = doc.data();
-				output = output + "<tr><td>"+req_data["id_request"]+"</td><td>"+req_data["id_barang"]+"</td><td>"+req_data["jml_barang"]+"</td></tr>"
+				var id_request = req_data["id_request"];
+				console.log(id_request);
+				output = output + "<tr><td>"+req_data["id_request"]+"</td><td>"+req_data["id_barang"]+"</td><td>"+req_data["id_minimarket"]+"</td><td>"+req_data["jml_barang"]+"</td><td><input id='"+req_data["id_request"]+"'type='date' value='"+req_data["jadwal_kirim"]+"'/><button onclick='updateJadwal(\""+id_request+"\",\""+doc.id+"\")'>Update Jadwal</button></td></tr>";
 			});
 			document.getElementById("requestData").innerHTML = output;
+		});
+	}
+	</script>
+	<script>
+	
+	function updateJadwal(id_request,doc_id){
+		var db = firebase.firestore();
+		var tanggal = document.getElementById(id_request).value;
+		
+		var washingtonRef = db.collection("requests").doc(doc_id);
+
+		// Set the "capital" field of the city 'DC'
+		return washingtonRef.update({
+			jadwal_kirim: tanggal
+		})
+		.then(function() {
+			console.log("Document successfully updated!");
+			alert("Jadwal Kirim Berhasil Diperbarui")
+		})
+		.catch(function(error) {
+			// The document probably doesn't exist.
+			console.error("Error updating document: ", error);
+			alert("Jadwal Kirim Gagal Diperbarui")
+			getRequests();
 		});
 	}
 	</script>
