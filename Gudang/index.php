@@ -9,11 +9,6 @@ include 'connection.php';
 <body onload="getRequests()">
 	<h1>Helo</h1>
 	
-	<!-- TODO
-	- nambah field tanggal sama id minimarket di table request
-	- update stock di gudang
-	-->
-	
 	<!-- FORM Request Barang -->
 	<!-- Gapake tag <form> supaya work haha -->
 	ID MINIMARKET<input type="text" name="id_minimarket" id="id_minimarket"/></br>
@@ -30,6 +25,8 @@ include 'connection.php';
 	</select></br>
 	JUMLAH BARANG<input type="number" name="jml_barang" id="jml_barang"/></br>
 	<button onclick="request()">Request Barang</button>
+	
+	<!-- Script Tambah Request -->
 	<script>
 	function request(){
 		console.log("Request Barang Clicked!");
@@ -78,6 +75,8 @@ include 'connection.php';
 		});
 	}
 	</script>
+	
+	<!-- Update Jadwal -->
 	<script>
 	function updateJadwal(id_request,doc_id){
 		var db = firebase.firestore();
@@ -102,6 +101,7 @@ include 'connection.php';
 	}
 	</script>
 	
+	<!-- Tampilkan Barang -->
 	<table border="1">
 	<tr><td>ID BARANG</td><td>NAMA BARANG</td><td>IMAGE</td><td>STOK</td></tr>
 	<?php	
