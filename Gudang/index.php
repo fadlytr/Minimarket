@@ -9,6 +9,8 @@ include 'connection.php';
 <body onload="getRequests()">
 	<h1>Helo</h1>
 	
+	
+	<!-- COPY DARI SINI DLY SAMPE -->
 	<!-- FORM Request Barang -->
 	<!-- Gapake tag <form> supaya work haha -->
 	ID MINIMARKET<input type="text" name="id_minimarket" id="id_minimarket"/></br>
@@ -52,9 +54,11 @@ include 'connection.php';
 		});
 		
 		//TAMPILKAN DATA
-		getRequests()
+		getRequests() <!-- ini ilangin di minimarket-->
 	}
 	</script>
+	<!-- SAMPE SINI-->
+	
 	
 	<!-- Show data request -->
 	<table id="requestData" border="1">
