@@ -17,7 +17,17 @@ include 'connection.php';
 	<!-- FORM Request Barang -->
 	<!-- Gapake tag <form> supaya work haha -->
 	ID MINIMARKET<input type="text" name="id_minimarket" id="id_minimarket"/></br>
-	ID BARANG<input type="text" name="id_barang" id="id_barang"/></br>
+	ID BARANG<!--<input type="text" name="id_barang" id="id_barang"/></br>-->
+	<select id="id_barang">
+		<?php	
+		$result = mysqli_query($conn, "SELECT id_barang FROM barang");
+		$total = mysqli_num_rows($result);
+			  
+		while($data = mysqli_fetch_array($result)){ 
+		?>
+		<option name="<?= $data['id_barang'];?>"><?= $data['id_barang'];?></option>
+		<?php } ?>
+	</select></br>
 	JUMLAH BARANG<input type="number" name="jml_barang" id="jml_barang"/></br>
 	<button onclick="request()">Request Barang</button>
 	<script>
@@ -30,10 +40,12 @@ include 'connection.php';
 		
 		// TAMBAH DATA KE FIREBASE
 		var db = firebase.firestore();
+		var val_timestamp = firebase.firestore.Timestamp.now();
 		db.collection("requests").add({
 		id_barang: val_id_barang,
 		id_minimarket: val_id_minimarket,
-		jml_barang: Number(val_jml_barang)
+		jml_barang: Number(val_jml_barang),
+		timestamp: val_timestamp
 		})
 		.then(function(docRef) {
 			console.log("Document written with ID: ", docRef.id);
@@ -54,7 +66,7 @@ include 'connection.php';
 	function getRequests(){	
 		var db = firebase.firestore();
 		var output = "<tr><td>ID REQUEST</td><td>ID BARANG</td><td>ID MINIMARKET</td><td>JUMLAH BARANG</td><td>JADWAL PENGIRIMAN</td><tr>";
-		db.collection("requests").get().then(function(querySnapshot) {
+		db.collection("requests").orderBy("timestamp","desc").get().then(function(querySnapshot) {
 			querySnapshot.forEach(function(doc) {
 				console.log(doc.id, " => ", doc.data());
 				var req_data = doc.data();
