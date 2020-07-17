@@ -75,7 +75,8 @@ include 'connection.php';
             id_barang: val_id_barang,
             id_minimarket: val_id_minimarket,
             jml_barang: Number(val_jml_barang),
-            timestamp: val_timestamp
+            timestamp: val_timestamp,
+			isReceived: false
           })
           .then(function(docRef) {
             console.log("Document written with ID: ", docRef.id);
@@ -122,7 +123,7 @@ include 'connection.php';
         // Set the "capital" field of the city 'DC'
         washingtonRef.get().then(function(doc) {
           req_data = doc.data();
-          if (req_data["isReceived"] != undefined && req_data["isReceived"] == false && req_data["jadwal_kirim"] != undefined) {
+          if (req_data["isReceived"] == false && req_data["jadwal_kirim"] != undefined) {
             return washingtonRef.update({
                 isReceived: true,
                 timestamp: val_timestamp

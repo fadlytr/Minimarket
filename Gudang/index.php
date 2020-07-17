@@ -44,7 +44,8 @@ include 'connection.php';
 		id_barang: val_id_barang,
 		id_minimarket: val_id_minimarket,
 		jml_barang: Number(val_jml_barang),
-		timestamp: val_timestamp
+		timestamp: val_timestamp,
+		isReceived: false
 		})
 		.then(function(docRef) {
 			console.log("Document written with ID: ", docRef.id);
