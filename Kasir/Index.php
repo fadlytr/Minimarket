@@ -1,5 +1,29 @@
 <?php
 include 'connection.php';
+if (isset($_POST['addItem'])) {
+  $id_barang = $_POST['idBarangBuy'];
+  $qty = $_POST['jumlahBuy'];
+  $status = 'new_trx';
+  $datenow = date("Y-m-d H:i:s");
+
+  // Liat apakah transaksi lama udah dibayar atau belum kalau udah bikin transaksi baru 
+  $trx = $conn->query("SELECT COUNT(*) FROM transaksi WHERE status = 'new_trx' AND jenis_trx = 1 ")->fetch_row();
+  if ($trx[0] == 0) {
+    $new_trx = mysqli_query($conn, "INSERT INTO transaksi (jenis_trx,tgl_trx,status) VALUES('1', '$datenow', '$status')");
+  }
+
+  // Ambil id_trx terakhir yang statusnya belum dibayar
+  $id_trx = $conn->query("SELECT id_trx FROM transaksi WHERE status = '$status' AND jenis_trx = 1 ")->fetch_object()->id_trx;
+
+  // Masukin ke cart
+  $query = mysqli_query($conn, "INSERT INTO detail_transaksi VALUES('$id_trx','$id_barang', '$qty')");
+
+  if ($query) {
+    echo '<script language="javascript">alert("Berhasil disimpan ke keranjang"); document.location="index.php";</script>';
+  } else {
+    echo '<script language="javascript">alert("Tidak berhasil disimpan ke keranjang"); document.location="index.php";</script>';
+  }
+}
 ?>
 <html lang="en">
 
@@ -12,8 +36,9 @@ include 'connection.php';
 
 <body onload="getRequests()">
   <b style="font-size: x-large;">Kasir MM1</b><br>
-  <div id="form_buy" style="margin-top: 5px;">
-    <form method="POST" action="Buy.php">
+  <!-- Form addItem -->
+  <div id="addItem" style="margin-top: 5px;">
+    <form method="POST" action="index.php">
       <label style="padding-right: 38px;">Id Barang</label>
       <select id="idBarangBuy" name="idBarangBuy">
         <?php
@@ -27,18 +52,74 @@ include 'connection.php';
       </select></br>
 
       <label style="padding-right: 10px;">Jumlah Barang</label><input type="number" name="jumlahBuy" id="jumlahBuy" /></br>
-      <input type="submit" name="Buy" value="Beli">
-
-      <table id="tableBarang" border="1">
-        <tr>
-          <td>Id Barang</td>
-          <td>Jumlah Beli</td>
-          <td>Harga Satuan</td>
-          <td>Harga total</td>
-        <tr>
-      </table>
+      <input type="submit" name="addItem" value="add Item">
     </form>
   </div>
+  <!-- End Form addItem -->
+
+  <!-- Cart and buy -->
+  <table class="tableCart" border="1">
+    <tr>
+      <td>
+        Nama item
+      </td>
+      <td>
+        Harga satuan
+      </td>
+      <td>
+        qty
+      </td>
+      <td>
+        Harga
+      </td>
+    </tr>
+    <?php
+    $id_trx = $conn->query("SELECT id_trx FROM transaksi WHERE status = 'new_trx' AND jenis_trx='1'")->fetch_object()->id_trx;
+
+    $total_harga = 0;
+    if ($id_trx != null) {
+      $sql = "SELECT a.*, b.* , SUM(a.jml_barang) as total 
+						from detail_transaksi a JOIN barang b 
+						ON a.id_barang = b.id_barang AND a.id_trx = $id_trx 
+						GROUP BY a.id_barang";
+      $result  = mysqli_query($conn, $sql);
+
+      while ($data = mysqli_fetch_array($result)) {
+    ?>
+        <tr>
+          <td class="col-md-6">
+            <?= $data['nama_barang']; ?>
+          </td>
+          <td>
+            <p class="price">Rp <?= $data['harga_barang']; ?></p>
+          </td>
+          <td>
+            <?php
+            echo  $data['total'];
+            $total_per_item = $data['total'] * $data['harga_barang'];
+            $total_harga += $total_per_item;
+            ?>
+          </td>
+          <td>
+            <?php
+            echo "<p>Rp " . $total_per_item . "</p>";
+            ?>
+          </td>
+        </tr>
+    <?php
+      }
+    } else {
+      echo '<p>Cart is empty</p>';
+    }
+    ?>
+  </table>
+  <form action="bayar.php" method="post">
+    <label style="padding-right: 38px;">Ringkasan Belanja</label><br>
+    <b style="margin-right: 20px;">Total Harga</b> Rp <?= $total_harga; ?>
+    <input type="hidden" name="id_trx" value="<?= $id_trx; ?>">
+    <input type="submit" name="bayar" value="Bayar Sekarang">
+  </form>
+  <!-- End Cart and Buy -->
 
   <!-- FORM Request Barang -->
   <div id="form_request" style="margin-top:20px">
@@ -56,7 +137,7 @@ include 'connection.php';
         <option name="<?= $data['id_barang']; ?>"><?= $data['id_barang']; ?></option>
       <?php } ?>
     </select></br>
-    <label style="padding-right: 10px;">Jumlah Barang</label><input type="number" name="jml_barang" id="jml_barang" /></br>
+    <label style="padding-right: 10px;">Jumlah Barang</label><input type="number" min="1" name="jml_barang" id="jml_barang" /></br>
     <button onclick="request()" style="margin-bottom: 10px;margin-left: 105px;">Request Barang</button>
 
     <!-- Script Tambah Request -->
@@ -84,9 +165,6 @@ include 'connection.php';
           .catch(function(error) {
             console.error("Error adding document: ", error);
           });
-
-        //TAMPILKAN DATA
-        // getRequests() < !--ini ilangin di minimarket-- >
       }
     </script>
 
@@ -113,7 +191,7 @@ include 'connection.php';
     </script>
     <!-- End Table Request  -->
 
-    <!-- Update Jadwal -->
+    <!-- Update receive -->
     <script>
       function received(id_request, doc_id, val_id_barang, val_new_stok) {
         var db = firebase.firestore();
@@ -150,6 +228,7 @@ include 'connection.php';
                 alert("Barang gagal diterima")
                 getRequests();
               });
+            getRequests();
           } else {
             return washingtonRef.update({
                 isReceived: false,
@@ -165,11 +244,14 @@ include 'connection.php';
                 alert("Barang gagal diterima")
                 getRequests();
               });
+            getRequests();
           }
         });
       }
     </script>
+    <!-- End Update Receive -->
   </div>
+<!-- End Form Request -->
 
 </body>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
