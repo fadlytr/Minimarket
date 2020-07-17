@@ -109,7 +109,7 @@ if (isset($_POST['addItem'])) {
     <?php
       }
     } else {
-      echo '<tr><td><p>Cart is empty</p></td></tr>';
+      echo '<p>Cart is empty</p>';
     }
     ?>
   </table>
