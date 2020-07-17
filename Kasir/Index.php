@@ -7,6 +7,7 @@ include 'connection.php';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KASIR MM1</title>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 </head>
 
 <body onload="getRequests()">
@@ -102,7 +103,7 @@ include 'connection.php';
             var id_request = doc.id;
             console.log(id_request);
             if (req_data["isReceived"] == false || req_data["isReceived"] == undefined) {
-              output = output + "<tr><td>" + id_request + "</td><td>" + req_data["id_barang"] + "</td><td>" + req_data["jml_barang"] + "</td><td>" + req_data["jadwal_kirim"] + "<button id ='" + id_request + "' onclick='received(\"" + id_request + "\",\"" + doc.id + "\")'>Receive</button></td></tr>";
+              output = output + "<tr><td>" + id_request + "</td><td>" + req_data["id_barang"] + "</td><td>" + req_data["jml_barang"] + "</td><td>" + req_data["jadwal_kirim"] + "<button id ='" + id_request + "' onclick='received(\"" + id_request + "\",\"" + doc.id + "\",\"" + req_data["id_barang"] + "\",\"" + req_data["jml_barang"] + "\")'>Receive</button></td></tr>";
             }
           });
           document.getElementById("requestData").innerHTML = output;
@@ -113,7 +114,7 @@ include 'connection.php';
 
     <!-- Update Jadwal -->
     <script>
-      function received(id_request, doc_id) {
+      function received(id_request, doc_id, val_id_barang, val_new_stok) {
         var db = firebase.firestore();
         var val_timestamp = firebase.firestore.Timestamp.now();
         var washingtonRef = db.collection("requests").doc(doc_id);
@@ -129,6 +130,15 @@ include 'connection.php';
               .then(function() {
                 console.log("Document successfully updated!");
                 alert("Barang Diterima!")
+				/* Update Stok di mysql */
+				$.ajax({
+					type : "POST",  //type of method
+					url  : "update_stok.php",  //your page
+					data : { id_barang: val_id_barang, new_stok: val_new_stok},// passing the values
+					success: function(res){
+						alert(res);          //do what you want here...
+					}
+				});
               })
               .catch(function(error) {
                 // The document probably doesn't exist.
