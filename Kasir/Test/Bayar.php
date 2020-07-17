@@ -17,11 +17,9 @@ if (isset($_POST['bayar'])) {
             $qty = $data['total'];
 
             //ngurangin stok barang	
-            if ($qty >= $data['stok_barang']) {
-                $stock_now = $data['stok_barang'] - $qty;
-                $update_stock = $conn->query("UPDATE barang SET stok_barang = $stock_now WHERE id_barang = '$id_barang'");
-                $trx++; //counter buat tau bahwa transaksi ini jadi dilakuin 
-            }
+            $stock_now = $data['stok_barang'] - $qty;
+            $update_stock = $conn->query("UPDATE barang SET stok_barang = $stock_now WHERE id_barang = '$id_barang'");
+            $trx++; //counter buat tau bahwa transaksi ini jadi dilakuin 
         }
 
         // update status pembayaran
@@ -44,5 +42,5 @@ if (isset($_POST['bayar'])) {
 }
 ?>
 <form method="post" action="index.php">
-  <input type="submit" name="Home" value="Home">
+    <input type="submit" name="Home" value="Home">
 </form>
