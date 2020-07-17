@@ -76,7 +76,7 @@ include 'connection.php';
             id_minimarket: val_id_minimarket,
             jml_barang: Number(val_jml_barang),
             timestamp: val_timestamp,
-			isReceived: false
+            isReceived: false
           })
           .then(function(docRef) {
             console.log("Document written with ID: ", docRef.id);
@@ -131,15 +131,18 @@ include 'connection.php';
               .then(function() {
                 console.log("Document successfully updated!");
                 alert("Barang Diterima!")
-				/* Update Stok di mysql */
-				$.ajax({
-					type : "POST",  //type of method
-					url  : "update_stok.php",  //your page
-					data : { id_barang: val_id_barang, new_stok: val_new_stok},// passing the values
-					success: function(res){
-						alert(res);          //do what you want here...
-					}
-				});
+                /* Update Stok di mysql */
+                $.ajax({
+                  type: "POST", //type of method
+                  url: "update_stok.php", //your page
+                  data: {
+                    id_barang: val_id_barang,
+                    new_stok: val_new_stok
+                  }, // passing the values
+                  success: function(res) {
+                    alert(res); //do what you want here...
+                  }
+                });
               })
               .catch(function(error) {
                 // The document probably doesn't exist.
